@@ -24,11 +24,60 @@
 不知道其它事务的存在，就会发生丢失更新问题，<b>最后的更新覆盖了由其它事务所做的更新</b>。比如 对一列数据10，一个事务对其
 更改减5，提交完，另一个事务也对其更改减3，提交完。10-5=5，10-3=7，写入数据库导致数据丢失。</p>
 
-<p>脏读(Dirty Reads)：一个事务读取到了另一个事务未提交的数据</p>
+<p>脏读(Dirty Reads)：一个事务读取到了另一个事务未提交的数据。<b>一个事务读取到了另一个事务未提交
+的数据，如果另一个事务回滚，那么就不合符一致性要求</b></p>
 <img src="https://github.com/jerryscheung/note/blob/master/img/mysql/mysql%E5%B9%BB%E8%AF%BB.png" target="_blank"/>
 
 <p>不可重复读(Non-Repeatable Reads)：一个事务在读取某些数据后的某个时间，再次读取该数据，却
-发现其读出的数据已经发生了改变，或某些记录已经被删除了。这种现象叫做“不可重复读”。</p>
+发现其读出的数据已经发生了改变，或某些记录已经被删除了。这种现象叫做“不可重复读”。
+<b>一个事务内部的相同查询语句在不同时刻读出的结果不一致，不符合隔离性</b></p>
 <img src="https://github.com/jerryscheung/note/blob/master/img/mysql/mysql%E4%B8%8D%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB.png" target="_blank"/>
 
+<p>幻读(Phantom Reads)一个事务按相同的查询条件重新读取以前检索过的数据，却发现其它事务插入了满足其查询条件的新数据，这种现象称为“幻读”。
+<b>一个事务读取到了另一个事务提交的新增数据，不合格隔离性</b></p>
 
+
+<h2>事务隔离级别</h2>
+<a href="https://www.contrib.andrew.cmu.edu/~shadow/sql/sql1992.txt" target="_blank">SQL1992规范</a>
+
+
+<h2>mysql锁</h2>
+
+
+
+<table border="0" width="50%" height="50%"  align="left" cellspacing="0" >
+  <tr>
+    <th>隔离级别</th>
+    <th>脏读(Dirty Read)</th>
+    <th>不可重复读(NonRepeatable Read)</th>
+    <th>幻读(Phantom Read)</th>
+  </tr>
+  <tr>
+    <td>读未提交(Read-Uncommitted)</td>
+    <td>Y</td>
+    <td>Y</td>
+    <td>Y</td>
+  </tr>
+  <tr>
+    <td>读已提交(Read-Committed)</td>
+    <td>N</td>
+    <td>Y</td>
+    <td>Y</td>
+  </tr>
+  <tr>
+    <td>可重复读(Repeatable-Read)</td>
+    <td text-align="center">N</td>
+    <td>N</td>
+    <td>Y</td>
+  </tr>
+  <tr>
+    <td>可串行化(Serializable)</td>
+    <td>N</td>
+    <td>N</td>
+    <td>N</td>
+  </tr>
+</table>
+
+<br>
+
+## ==
